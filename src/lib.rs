@@ -7,11 +7,10 @@ use syn::{
     MetaNameValue, NestedMeta,
 };
 
-mod sqlx_template;
 mod columns;
+mod generic_query;
 mod parser;
-
-
+mod sqlx_template;
 
 /// `InsertTemplate` is a derive macro designed to automatically generate record insert functions
 /// based on `sqlx`. This macro creates `insert` methods for the struct it is applied to, returning
@@ -67,7 +66,6 @@ mod parser;
 /// and properly configure the database connection before using the generated insert methods.
 ///
 
-
 #[proc_macro_derive(InsertTemplate, attributes(table_name, auto, debug_slow))]
 pub fn insert_derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let input = syn::parse_macro_input!(input as syn::DeriveInput);
@@ -77,7 +75,6 @@ pub fn insert_derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
     }
     .into()
 }
-
 
 /// `UpdateTemplate` is a derive macro designed to automatically generate record update functions
 /// based on `sqlx`. This macro creates `update` methods for the struct it is applied to, reducing
@@ -139,10 +136,9 @@ pub fn update_derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
     .into()
 }
 
-
 /// `DeleteTemplate` is a derive macro designed to automatically generate record deletion functions
 /// based on `sqlx`. This macro creates `delete` methods for the struct it is applied to, returning
-/// the number of records deleted. 
+/// the number of records deleted.
 /// It assumes that the columns in the database correspond to the fields in the struct.
 ///
 /// # Attributes
@@ -210,7 +206,6 @@ pub fn delete_derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
     }
     .into()
 }
-
 
 /// `SelectTemplate` is a derive macro designed to automatically generate record retrieval functions
 /// based on `sqlx`. This macro creates various `query` methods for the struct it is applied to,
@@ -305,7 +300,18 @@ pub fn delete_derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
 /// and properly configure the database connection before using the generated query methods.
 ///
 
-#[proc_macro_derive(SelectTemplate, attributes(table_name, debug_slow, tp_select_all, tp_select_one, tp_select_page, tp_select_stream, tp_select_count))]
+#[proc_macro_derive(
+    SelectTemplate,
+    attributes(
+        table_name,
+        debug_slow,
+        tp_select_all,
+        tp_select_one,
+        tp_select_page,
+        tp_select_stream,
+        tp_select_count
+    )
+)]
 pub fn select_derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let input = syn::parse_macro_input!(input as syn::DeriveInput);
     match sqlx_template::select::derive_select(input) {
@@ -324,8 +330,6 @@ pub fn columns_derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream
     }
     .into()
 }
-
-
 
 /// The `TableName` derive macro automatically generates a `table_name` function
 /// for a struct, returning the value specified in the `table_name` attribute.
@@ -432,7 +436,6 @@ pub fn table_name_derive(input: proc_macro::TokenStream) -> proc_macro::TokenStr
 /// ```
 ///
 
-
 #[proc_macro_attribute]
 pub fn multi_query(args: TokenStream, item: TokenStream) -> proc_macro::TokenStream {
     let input = syn::parse_macro_input!(item as syn::ItemFn);
@@ -443,7 +446,6 @@ pub fn multi_query(args: TokenStream, item: TokenStream) -> proc_macro::TokenStr
     }
     .into()
 }
-
 
 /// The `query` procedural macro transforms an SQL query with named parameters into
 /// an asynchronous function that interacts with the database. It provides various
@@ -539,8 +541,6 @@ pub fn query(args: TokenStream, item: TokenStream) -> proc_macro::TokenStream {
     .into()
 }
 
-
-
 /// The `select` procedural macro transforms a SQL query with named parameters into
 /// an asynchronous function that interacts with the database. It provides various
 /// features, including debugging options and support for multiple return types.
@@ -627,7 +627,6 @@ pub fn select(args: TokenStream, item: TokenStream) -> proc_macro::TokenStream {
     .into()
 }
 
-
 /// The `update` procedural macro transforms an SQL `UPDATE` query with named parameters into
 /// an asynchronous function that interacts with the database. It provides various
 /// features, including debugging options and support for returning the number of affected rows.
@@ -687,7 +686,7 @@ pub fn select(args: TokenStream, item: TokenStream) -> proc_macro::TokenStream {
 ///
 /// - **Affected Rows:**
 ///   - `RowAffected`: Returns the number of affected rows.
-/// 
+///
 /// - **Void:**
 ///   - : Returns nothing.
 ///
@@ -702,7 +701,6 @@ pub fn select(args: TokenStream, item: TokenStream) -> proc_macro::TokenStream {
 /// ```
 ///
 
-
 #[proc_macro_attribute]
 pub fn update(args: TokenStream, item: TokenStream) -> proc_macro::TokenStream {
     let input = syn::parse_macro_input!(item as syn::ItemFn);
@@ -713,7 +711,6 @@ pub fn update(args: TokenStream, item: TokenStream) -> proc_macro::TokenStream {
     }
     .into()
 }
-
 
 /// The `insert` procedural macro transforms an SQL `INSERT` query with named parameters into
 /// an asynchronous function that interacts with the database. It provides various
@@ -775,7 +772,7 @@ pub fn update(args: TokenStream, item: TokenStream) -> proc_macro::TokenStream {
 ///
 /// - **Affected Rows:**
 ///   - `RowAffected`: Returns the number of affected rows.
-/// 
+///
 /// - **Void:**
 ///   - : Returns nothing.
 ///
@@ -793,7 +790,6 @@ pub fn update(args: TokenStream, item: TokenStream) -> proc_macro::TokenStream {
 /// ```
 ///
 
-
 #[proc_macro_attribute]
 pub fn insert(args: TokenStream, item: TokenStream) -> proc_macro::TokenStream {
     let input = syn::parse_macro_input!(item as syn::ItemFn);
@@ -804,7 +800,6 @@ pub fn insert(args: TokenStream, item: TokenStream) -> proc_macro::TokenStream {
     }
     .into()
 }
-
 
 /// The `delete` procedural macro transforms an SQL `DELETE` query with named parameters into
 /// an asynchronous function that interacts with the database. It provides various
@@ -866,7 +861,7 @@ pub fn insert(args: TokenStream, item: TokenStream) -> proc_macro::TokenStream {
 ///
 /// - **Affected Rows:**
 ///   - `RowAffected`: Returns the number of affected rows.
-/// 
+///
 /// - **Void:**
 ///   - : Returns nothing.
 ///
