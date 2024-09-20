@@ -17,8 +17,7 @@ pub mod insert;
 pub mod delete;
 pub mod raw;
 pub mod ddl;
-
-
+pub mod query_builder;
 
 pub fn get_table_name(ast: &DeriveInput) -> String {
     let struct_name = &ast.ident;
