@@ -98,7 +98,7 @@ pub trait QueryBuilder<T> {
 }
 
 impl QueryComponent {
-    fn build_to_string(mut self) -> syn::Result<String> {
+    fn build_to_string(self) -> syn::Result<String> {
         let mut result = String::new();
         let action = self.action;
         let action_str = action.as_str();
@@ -215,8 +215,8 @@ fn build_where_condition(where_conditions: &Vec<WhereCondition>) -> String {
 
 #[test]
 fn test_build_query() {
-    let mut query = QueryComponent {
-        action: QueryAction::Select,
+    let query = QueryComponent {
+        action: QueryAction::Delete,
         table_name: String::from("TB"),
         field_names: vec![String::from("id")],
         operated_in: Some(Box::new(QueryComponent {
@@ -233,7 +233,12 @@ fn test_build_query() {
             }]),
         })),
         params: None,
-        where_conditions: None,
+        where_conditions: Some(vec![WhereCondition {
+            field_name: String::from("A"),
+            value: vec![String::from("B")],
+            logic_operator: None,
+            operator: QueryOperator::In,
+        }]),
     };
 
     println!("{}", query.build_to_string().unwrap())
