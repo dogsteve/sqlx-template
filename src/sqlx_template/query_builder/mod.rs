@@ -83,7 +83,7 @@ pub struct QueryComponent {
     pub action: QueryAction,
     pub table_name: String,
     pub field_names: Vec<String>,
-    pub operated_in: Option<Box<QueryComponent>>,
+    pub sub_query: Option<Box<QueryComponent>>,
     pub params: Option<HashMap<String, String>>,
     pub where_conditions: Option<Vec<WhereCondition>>,
 }
@@ -116,7 +116,7 @@ impl QueryComponent {
                     result.push_str(" )");
                 }
                 result.push_str(" FROM ");
-                if let Some(mut operated_in) = self.operated_in {
+                if let Some(mut operated_in) = self.sub_query {
                     let operated_in = operated_in;
                     match operated_in.build_to_string() {
                         Ok(rs) => {
@@ -219,11 +219,11 @@ fn test_build_query() {
         action: QueryAction::Delete,
         table_name: String::from("TB"),
         field_names: vec![String::from("id")],
-        operated_in: Some(Box::new(QueryComponent {
+        sub_query: Some(Box::new(QueryComponent {
             action: QueryAction::Select,
             table_name: String::from("SUB_TB"),
             field_names: vec![],
-            operated_in: None,
+            sub_query: None,
             params: None,
             where_conditions: Some(vec![WhereCondition {
                 field_name: String::from("A"),
@@ -237,7 +237,7 @@ fn test_build_query() {
             field_name: String::from("A"),
             value: vec![String::from("B")],
             logic_operator: None,
-            operator: QueryOperator::In,
+            operator: QueryOperator::NotEqual,
         }]),
     };
 
